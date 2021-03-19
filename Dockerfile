@@ -1,3 +1,5 @@
+
+#########################################################
 FROM ubuntu:20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -9,12 +11,16 @@ RUN apt-get update && apt-get install -y apt-utils && \
     git \
     gnupg \
     iputils-ping \
+    jq \
     less \
     python3 \
     python3-pip \
+    rsync \
     telnet \
+    unzip \
     vim \
     wget \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # The next command gets things like manpages, but this add 200M to the image, and usually --help is just fine
@@ -40,6 +46,14 @@ RUN wget -qO- https://github.com/rancher/cli/releases/download/v2.4.10/rancher-l
 # Install kustomize
 RUN curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash && \
   mv kustomize /usr/local/bin
+
+# Install helm3
+RUN \
+  mkdir /tmp/helm && \
+  wget -qO- "https://get.helm.sh/helm-v3.5.3-linux-amd64.tar.gz" \
+  | tar xvz -C /tmp/helm/ && \
+  mv /tmp/helm/linux-amd64/helm /usr/local/bin/
+
 
 # Add a toolbox user, to not run as root
 RUN \
