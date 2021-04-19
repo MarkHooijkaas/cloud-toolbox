@@ -6,26 +6,32 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y apt-utils && \
   apt-get update && apt-get -y install --no-install-recommends \
     apt-transport-https \
+    bash-completion \
     ca-certificates \
     curl \
     git \
     gnupg \
     iputils-ping \
+    jed \
     jq \
     less \
+    nano \
+    openssh-client \
     python3 \
     python3-pip \
     rsync \
     telnet \
+    tcptraceroute \
+    traceroute \
     unzip \
     vim \
     wget \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    zip \
+    && apt-get clean
+    #&& rm -rf /var/lib/apt/lists/*
 
 # The next command gets things like manpages, but this add 200M to the image, and usually --help is just fine
 # RUN yes | unminimize
-
 
 # Install kubectl
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
@@ -54,6 +60,9 @@ RUN \
   | tar xvz -C /tmp/helm/ && \
   mv /tmp/helm/linux-amd64/helm /usr/local/bin/
 
+# Install yq
+RUN curl -sLo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && \
+  chmod 755 /usr/local/bin/yq
 
 # Add a toolbox user, to not run as root
 RUN \
